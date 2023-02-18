@@ -1,0 +1,26 @@
+<div class="video">
+  <h5 class="card-title">City: {{ MS.selectedLocation.city_name }}</h5>
+  <h6 class="card-subtitle mb-2 text-muted">
+    Lat: {{ MS.selectedLocation.latitude }}, Long:
+    {{ MS.selectedLocation.longitude }}
+  </h6>
+  <p class="card-text">Country: {{ MS.selectedLocation.country_name }}</p>
+  <iframe *ngIf="MS.videos" width="420" height="315" [src]="MS.videos[0].link">
+  </iframe>
+  <a
+    *ngIf="MS.videos"
+    title="Open in new window"
+    target="_blank"
+    href="{{ MS.videos[0].link.changingThisBreaksApplicationSecurity }}"
+    class="card-link"
+    ><i class="bi bi-folder2-open"></i
+  ></a>
+  <button
+    title="Add to favourites"
+    type="button"
+    class="btn btn-dark float-end"
+    (click)="addToFavourites()"
+  >
+    <i class="bi bi-heart"></i>
+  </button>
+</div>

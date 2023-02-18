@@ -1,0 +1,21 @@
+<div class="form-signin w-100 m-auto">
+  <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+
+  <form [formGroup]="signinForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input matInput formControlName="password" />
+    </mat-form-field>
+
+    <button class="w-100 btn btn-lg btn-secondary" type="submit">
+      Sign in
+    </button>
+  </form>
+
+  <a href="#" (click)="register_clickhandler()">Please register</a>
+</div>

@@ -1,7 +1,7 @@
 {
 	"api_key": "",
-	"mysql_host": "localhost",
-	"mysql_user": "root",
-	"mysql_pass": "",
+	"mysql_host": "db-mysql-nyc1-57128-do-user-13592936-0.b.db.ondigitalocean.com",
+	"mysql_user": "doadmin",
+	"mysql_pass": "AVNS_5O31MwhhKwgWzFvkBkM",
 	"mysql_db": "motherlandglobal"
 }

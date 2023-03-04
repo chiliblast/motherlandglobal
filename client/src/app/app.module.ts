@@ -5,8 +5,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpClientModule } from '@angular/common/http';
 import { MatInputModule } from '@angular/material/input';
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
+
+import { AppComponent } from './app.component';
 import { CesiumDirective } from './cesium/cesium.directive';
 import { HomeComponent } from './pages/home/home.component';
 import { VideoComponent } from './pages/video/video.component';
@@ -33,6 +35,7 @@ import { PanelComponent } from './pages/panel/panel.component';
     MatInputModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    ToastrModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent],

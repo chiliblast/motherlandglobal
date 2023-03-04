@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
+import { MessageService } from 'src/app/services/message.service';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -12,7 +14,12 @@ export class SignupComponent {
   destroy$: Subject<boolean> = new Subject<boolean>();
   signupForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(
+    private fb: FormBuilder,
+    private apiService: ApiService,
+    private MS: MessageService,
+    private toastr: ToastrService
+  ) {
     this.signupForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -37,10 +44,14 @@ export class SignupComponent {
         .signup(formData)
         .pipe(takeUntil(this.destroy$))
         .subscribe((res: any) => {
-          console.log(res);
+          if (res.status == 'success') {
+            this.toastr.success(res.message);
+            this.signupForm.reset();
+            this.MS.panel = 'signin';
+          } else if (res.status == 'fail') {
+            this.toastr.error(res.message);
+          }
         });
-
-      //this.signupForm.reset();
     }
   }
 

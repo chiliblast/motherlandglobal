@@ -16,11 +16,12 @@
     ><i class="bi bi-folder2-open"></i
   ></a>
   <button
-    title="Add to favourites"
+    title="Add/ Remove from favourites"
     type="button"
     class="btn btn-dark float-end"
-    (click)="addToFavourites()"
+    (click)="addRemoveFavourite()"
   >
-    <i class="bi bi-heart"></i>
+    <i *ngIf="!isFavourite()" class="bi bi-heart"></i>
+    <i *ngIf="isFavourite()" class="bi bi-heart-fill"></i>
   </button>
 </div>

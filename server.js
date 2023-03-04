@@ -16,6 +16,8 @@ app.use(express.urlencoded({ extended: true }));
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 
+app.use(express.static(process.cwd() + "/client/dist/motherlandglobal/"));
+
 app.set("etag", false);
 
 app.use((req, res, next) => {
@@ -28,7 +30,7 @@ const port = 3000;
 const mysql2 = require("mysql2/promise");
 
 app.listen(port, () => {
-	console.log(`motherlandglobal Server listening on the port::${port}`);
+	console.log(`MotherlandGlobal Server listening on the port::${port}`);
 });
 
 async function getConnection() {
@@ -61,7 +63,8 @@ function getAuth(req, res) {
 //----------------------------API Calls-------------------------------------------
 
 app.get("/", (req, res) => {
-	res.send("motherlandglobal Server Works !!!!");
+	//res.send("Motherland Global Server Works !!!!");
+	res.sendFile(process.cwd() + "/client/dist/motherlandglobal/index.html");
 });
 
 app.get("/api/getUsers", async (req, res) => {
@@ -91,11 +94,39 @@ app.post("/api/getVideos", async (req, res) => {
 	api.getVideos(connection, req, res).catch(console.log);
 });
 
+app.get("/api/getFavourites", async (req, res) => {
+	let connection = await getConnection();
+	connection.connect();
+
+	api.getFavourites(connection, req, res).catch(console.log);
+});
+
+app.post("/api/signin", upload.none(), async (req, res) => {
+	let connection = await getConnection();
+	connection.connect();
+
+	api.signin(connection, req, res).catch(console.log);
+});
+
 app.post("/api/signup", upload.none(), async (req, res) => {
 	let connection = await getConnection();
 	connection.connect();
 
 	api.signup(connection, req, res).catch(console.log);
+});
+
+app.post("/api/getFavourites", async (req, res) => {
+	let connection = await getConnection();
+	connection.connect();
+
+	api.getFavourites(connection, req, res).catch(console.log);
+});
+
+app.post("/api/addRemoveFavourite", upload.none(), async (req, res) => {
+	let connection = await getConnection();
+	connection.connect();
+
+	api.addRemoveFavourite(connection, req, res).catch(console.log);
 });
 
 app.post("/function_name", cors(), async (req, res) => {

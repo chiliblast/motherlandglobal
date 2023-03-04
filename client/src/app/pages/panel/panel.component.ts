@@ -8,4 +8,9 @@ import { MessageService } from 'src/app/services/message.service';
 })
 export class PanelComponent {
   constructor(public MS: MessageService) {}
+
+  signout_clickHandler() {
+    this.MS.user = null;
+    this.MS.videos = null;
+  }
 }

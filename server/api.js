@@ -26,8 +26,8 @@ module.exports = {
 			//result[0].push({ body: req.body });
 			res.send(result[0]);
 		} else {
-			res.send("No result");
-			console.log("No result");
+			res.send("function_name: No result");
+			console.log("function_name: No result");
 		}
 
 		return 0;
@@ -46,8 +46,8 @@ module.exports = {
 		if (result.length && typeof result[0][0] !== "undefined") {
 			res.send(result[0]);
 		} else {
-			res.send("No result");
-			console.log("No result");
+			res.send("getUsers: No result");
+			console.log("getUsers: No result");
 		}
 
 		return 0;
@@ -66,8 +66,8 @@ module.exports = {
 		if (result.length && typeof result[0][0] !== "undefined") {
 			res.send(result[0]);
 		} else {
-			res.send("No result");
-			console.log("No result");
+			res.send("getLocations: No result");
+			console.log("getLocations: No result");
 		}
 
 		return 0;
@@ -89,8 +89,41 @@ module.exports = {
 			if (result.length && typeof result[0][0] !== "undefined") {
 				res.send(result[0]);
 			} else {
-				res.send("No result");
-				console.log("No result");
+				res.send("getVideos: No result");
+				console.log("getVideos: No result");
+			}
+		} else {
+			return 0;
+		}
+	},
+
+	signin: async function (connection, req, res) {
+		let email = req.body.email;
+		let password = req.body.password;
+
+		if (this.isValid(email) && this.isValid(password)) {
+			let query = `CALL sp_signin('${email}', '${password}')`;
+
+			try {
+				let result = await connection.query(query);
+
+				if (result && result[0][0].length > 0) {
+					res.send({
+						status: "success",
+						message: "Sign in successfully",
+						body: result[0][0][0],
+					});
+				} else {
+					res.send({
+						status: "fail",
+						message: "User not registered",
+					});
+				}
+			} catch (err) {
+				console.error(err);
+				return 0;
+			} finally {
+				await connection.end();
 			}
 		} else {
 			return 0;
@@ -114,11 +147,10 @@ module.exports = {
 			let query = `INSERT INTO users (firstName, lastName, email, password)
   				VALUES ('${firstName}', '${lastName}', '${email}', '${hash}');`;*/
 
-			let query = `CALL insert_user('${firstName}', '${lastName}', '${email}', '${password}')`;
+			let query = `CALL sp_signup('${firstName}', '${lastName}', '${email}', '${password}')`;
 
 			try {
 				let result = await connection.query(query);
-				console.log(result[0]);
 				if (result && result[0].affectedRows === 1) {
 					res.send({
 						status: "success",
@@ -130,7 +162,68 @@ module.exports = {
 						status: "fail",
 						message: "User already registered",
 					});
-					console.log("No result");
+				}
+			} catch (err) {
+				console.error(err);
+				return 0;
+			} finally {
+				await connection.end();
+			}
+		} else {
+			return 0;
+		}
+	},
+
+	getFavourites: async function (connection, req, res) {
+		let user_id = req.body.user_id;
+
+		if (this.isValid(user_id)) {
+			let query = `
+			SELECT id, video_id
+			FROM favourites
+			WHERE user_id = ?
+		  `;
+			let [rows] = await connection.query(query, [user_id]);
+
+			if (rows.length) {
+				res.send(rows);
+			} else {
+				res.send([]);
+			}
+		} else {
+			return 0;
+		}
+	},
+
+	addRemoveFavourite: async function (connection, req, res) {
+		let user_id = req.body.user_id;
+		let video_id = req.body.video_id;
+
+		if (this.isValid(user_id) && this.isValid(video_id)) {
+			try {
+				const [rows] = await connection.query(
+					"CALL sp_addRemoveFavourite(?, ?, @p_result)",
+					[user_id, video_id]
+				);
+				const [[{ p_result }]] = await connection.query(
+					"SELECT @p_result AS p_result"
+				);
+
+				if (p_result === "added") {
+					res.status(200).json({
+						status: "success",
+						message: "Added to favourites",
+					});
+				} else if (p_result === "removed") {
+					res.status(200).json({
+						status: "success",
+						message: "Removed from favourites",
+					});
+				} else {
+					res.status(400).json({
+						status: "fail",
+						message: "Something went wrong",
+					});
 				}
 			} catch (err) {
 				console.error(err);

@@ -1,12 +1,31 @@
 <div class="panel">
   <button
-    title="Signin"
+    title="User signin"
     type="button"
     class="btn btn-dark float-end"
     (click)="MS.panel = 'signin'"
-    *ngIf="MS.panel == 'video' || MS.panel == 'signup'"
+    *ngIf="MS.user == null && (MS.panel == 'video' || MS.panel == 'signup')"
   >
     <i class="bi bi-person"></i>
+  </button>
+
+  <button
+    title="signout"
+    type="button"
+    class="btn btn-dark float-end"
+    (click)="signout_clickHandler()"
+    *ngIf="MS.user != null"
+  >
+    <i class="bi bi-box-arrow-right"></i>
+  </button>
+
+  <button
+    title="{{ MS.user.firstName }} {{ MS.user.lastName }}"
+    type="button"
+    class="btn btn-dark float-end"
+    *ngIf="MS.user != null"
+  >
+    <i class="bi bi-person-fill"></i>
   </button>
 
   <button

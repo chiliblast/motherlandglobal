@@ -21,8 +21,16 @@ export class ApiService {
     return this.http.post(this.rootURL + '/getVideos', { location_id });
   }
 
+  getFavourites(user_id: any) {
+    return this.http.post(this.rootURL + '/getFavourites', { user_id });
+  }
+
   addUser(user: any) {
     return this.http.post(this.rootURL + '/getUser', { user });
+  }
+
+  signin(formData: any) {
+    return this.http.post(this.rootURL + '/signin', formData);
   }
 
   signup(formData: any) {
@@ -30,5 +38,9 @@ export class ApiService {
       console.log(pair[0] + ': ' + pair[1]);
     }*/
     return this.http.post(this.rootURL + '/signup', formData);
+  }
+
+  addRemoveFavourite(formData: any) {
+    return this.http.post(this.rootURL + '/addRemoveFavourite', formData);
   }
 }

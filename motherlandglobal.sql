@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Feb 18, 2023 at 08:40 AM
+-- Generation Time: Mar 03, 2023 at 06:19 PM
 -- Server version: 5.7.19
 -- PHP Version: 7.1.9
 
@@ -26,13 +26,39 @@ DELIMITER $$
 --
 -- Procedures
 --
-DROP PROCEDURE IF EXISTS `insert_user`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_user` (IN `p_firstName` VARCHAR(255), IN `p_lastName` VARCHAR(255), IN `p_email` VARCHAR(255), IN `p_password` VARCHAR(255))  BEGIN
-  DECLARE hash VARCHAR(255);
-  SET hash = MD5(p_password);
+DROP PROCEDURE IF EXISTS `sp_addRemoveFavourite`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addRemoveFavourite` (IN `p_user_id` INT, IN `p_video_id` INT, OUT `p_result` VARCHAR(10))  NO SQL
+BEGIN
+    IF EXISTS (
+        SELECT * FROM favourites 
+        WHERE user_id = p_user_id AND video_id = p_video_id
+    ) THEN
+        DELETE FROM favourites 
+        WHERE user_id = p_user_id AND video_id = p_video_id;
+        SET p_result = 'removed';
+    ELSE
+        INSERT INTO favourites (user_id, video_id) VALUES (p_user_id, p_video_id);
+        SET p_result = 'added';
+    END IF;
+END$$
+
+DROP PROCEDURE IF EXISTS `sp_signin`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_signin` (IN `p_email` VARCHAR(255), IN `p_password` VARCHAR(255))  NO SQL
+BEGIN
+  DECLARE hashed_password VARCHAR(255);
+  
+  SET hashed_password = MD5(p_password);
+  
+  SELECT id, firstname,lastName,email FROM users WHERE email = p_email AND password = hashed_password;
+END$$
+
+DROP PROCEDURE IF EXISTS `sp_signup`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_signup` (IN `p_firstName` VARCHAR(255), IN `p_lastName` VARCHAR(255), IN `p_email` VARCHAR(255), IN `p_password` VARCHAR(255))  BEGIN
+  DECLARE hashed_password VARCHAR(255);
+  SET hashed_password = MD5(p_password);
 
   INSERT INTO users (firstName, lastName, email, password)
-  SELECT p_firstName, p_lastName, p_email, hash
+  SELECT p_firstName, p_lastName, p_email, hashed_password
   FROM DUAL
   WHERE NOT EXISTS (
     SELECT 1 FROM users WHERE email = p_email
@@ -40,6 +66,20 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_user` (IN `p_firstName` VARC
 END$$
 
 DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `favourites`
+--
+
+DROP TABLE IF EXISTS `favourites`;
+CREATE TABLE IF NOT EXISTS `favourites` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `video_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -88,14 +128,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(50) NOT NULL,
   `password` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `firstName`, `lastName`, `email`, `password`) VALUES
-(18, 'Umar', 'Sharif', 'umar@sharif.com', '96e79218965eb72c92a549dd5a330112');
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

@@ -1,4 +1,3 @@
-import { SafeResourceUrl } from '@angular/platform-browser';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
@@ -7,13 +6,13 @@ import { Observable, Subject } from 'rxjs';
 })
 export class MessageService {
   private subject = new Subject<string>();
-
+  user: any = null;
   panel = 'video';
-
+  favourites = [];
   viewer: any; //cesium viewer
 
   locations: any; //{id,city_name,country_name,distance,latitude,longitude,position}
-  videos: any; //{id,link,location_id}
+  videos: any = null; //{id,link,location_id}
   //selectedLocation: any;
   userLocation: any = { lat: 0, lng: 0 };
   selectedLocation: any = {

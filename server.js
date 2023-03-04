@@ -39,6 +39,7 @@ async function getConnection() {
 		user: config.mysql_user,
 		password: config.mysql_pass,
 		database: config.mysql_db,
+		port: config.mysql_port,
 		multipleStatements: true,
 	});
 }

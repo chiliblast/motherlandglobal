@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { AppComponent } from './app.component';
 import { CesiumDirective } from './cesium/cesium.directive';
@@ -36,6 +37,7 @@ import { PanelComponent } from './pages/panel/panel.component';
     AppRoutingModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
+    MatAutocompleteModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

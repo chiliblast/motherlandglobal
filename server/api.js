@@ -90,7 +90,6 @@ module.exports = {
 				res.send(result[0]);
 			} else {
 				res.send("getVideos: No result");
-				console.log("getVideos: No result");
 			}
 		} else {
 			return 0;

@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 
-//app.use(express.static(process.cwd() + "/client/dist/motherlandglobal/"));
+app.use(express.static(process.cwd() + "/client/dist/motherlandglobal/"));
 
 app.set("etag", false);
 
@@ -65,7 +65,7 @@ function getAuth(req, res) {
 
 app.get("/", (req, res) => {
 	res.send("Motherland Global Server Works !!!!");
-	//res.sendFile(process.cwd() + "/client/dist/motherlandglobal/index.html");
+	res.sendFile(process.cwd() + "/client/dist/motherlandglobal/index.html");
 });
 
 app.get("/api/getUsers", async (req, res) => {

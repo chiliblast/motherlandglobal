@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "http://127.0.0.1:8080",
+    "target": "https://goldfish-app-dnex5.ondigitalocean.app/",
     "proxyTimeout": 60000,
     "secure": false,
     "changeOrigin": true

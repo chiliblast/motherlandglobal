@@ -38,7 +38,7 @@
     <i class="bi bi-youtube"></i>
   </button>
 
-  <form>
+  <form class="d-flex" (ngSubmit)="onSubmit()">
     <mat-form-field appearance="outline">
       <mat-label>Search Location</mat-label>
       <input
@@ -57,6 +57,7 @@
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
+    <button class="btn btn-sm btn-secondary" type="submit">Go</button>
   </form>
 
   <div class="card bg-dark text-bg-dark" style="width: 450px">

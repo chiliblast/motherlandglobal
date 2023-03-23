@@ -3,7 +3,7 @@ import { MessageService } from '../services/message.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ApiService } from '../services/api.service';
-import { DomSanitizer } from '@angular/platform-browser';
+import { FunctionService } from '../services/function.service';
 declare var Cesium: any;
 declare var CesiumNavigation: any;
 @Directive({
@@ -11,12 +11,12 @@ declare var CesiumNavigation: any;
 })
 export class CesiumDirective implements OnInit {
   destroy$: Subject<boolean> = new Subject<boolean>();
-  cameraAlt: number = 100000;
+
   constructor(
     private el: ElementRef,
     private MS: MessageService,
-    private apiService: ApiService,
-    private sanitizer: DomSanitizer
+    private FS: FunctionService,
+    private apiService: ApiService
   ) {}
 
   ngOnInit() {
@@ -97,8 +97,8 @@ export class CesiumDirective implements OnInit {
           scope.MS.selectedLocation = scope.MS.locations.find(
             (location: any) => location.id === id
           );
-          scope.getVideos(scope.MS.selectedLocation.id);
-          scope.gotoSelectedLocation();
+          scope.FS.getVideos(scope.MS.selectedLocation.id);
+          scope.FS.gotoSelectedLocation();
         }
       }
     },
@@ -112,6 +112,7 @@ export class CesiumDirective implements OnInit {
       .getLocations()
       .pipe(takeUntil(this.destroy$))
       .subscribe((res: any) => {
+        console.log(res);
         this.MS.locations = res;
         this.showLocations();
         this.getUserLocation();
@@ -151,8 +152,8 @@ export class CesiumDirective implements OnInit {
         scope.MS.userLocation.lng = 16.5163;
 
         scope.MS.selectedLocation = scope.searchNearbyLocation()[0];
-        scope.getVideos(scope.MS.selectedLocation.id);
-        scope.gotoSelectedLocation();
+        scope.FS.getVideos(scope.MS.selectedLocation.id);
+        scope.FS.gotoSelectedLocation();
       });
     } else {
       console.log('Geolocation is not supported by this browser.');
@@ -178,44 +179,5 @@ export class CesiumDirective implements OnInit {
     });
     this.MS.locations.sort((a: any, b: any) => a.distance - b.distance);
     return this.MS.locations.slice(0, numberOfLocations);
-  }
-
-  gotoSelectedLocation() {
-    var lng = this.MS.selectedLocation.longitude;
-    var lat = this.MS.selectedLocation.latitude;
-
-    this.MS.viewer.camera.flyTo({
-      destination: Cesium.Cartesian3.fromDegrees(lng, lat, this.cameraAlt),
-      complete: function () {
-        //scope.selectLocation();
-      },
-    });
-
-    let center = Cesium.Cartesian3.fromDegrees(lng, lat, 100);
-    let circle = this.MS.viewer.entities.getById('Circle');
-    if (circle == undefined) {
-      this.MS.viewer.entities.add({
-        id: 'Circle',
-        position: center,
-        billboard: {
-          image: 'assets/circle.png',
-          pixelSize: 1,
-        },
-      });
-    } else {
-      circle.position = center;
-    }
-  }
-
-  getVideos(location_id: any) {
-    this.apiService
-      .getVideos(location_id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((res: any) => {
-        this.MS.videos = res;
-        this.MS.videos[0].link = this.sanitizer.bypassSecurityTrustResourceUrl(
-          this.MS.videos[0].link
-        );
-      });
   }
 }
